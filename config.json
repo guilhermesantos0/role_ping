@@ -1,5 +1,5 @@
 {
-    "token": "",
+    "token": "Y",
     "activities": [
         { 
             "text": "Developed by https://github.com/guilhermesantos0", 
@@ -10,5 +10,9 @@
             "type": 1
         }
     ],
-    "embedColor": "#00CDFF"
+    "embedColor": "#00CDFF",
+    "defaultTimeout": "1h",
+    "logsChannel": {
+        "": ""
+    }
 }
