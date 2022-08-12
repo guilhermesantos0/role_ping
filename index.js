@@ -25,7 +25,7 @@ const commands = [
     {
         name: "addrole",
         type: Discord.ApplicationCommandType.ChatInput,
-        description: "Add a role for the bot to ping!",
+        description: "Add a role for the bot to disable pinging!",
         options: [
             {
                 name: "role",
@@ -34,39 +34,26 @@ const commands = [
                 description: "The role you want to add!"
             },
             {
-                name: "channel",
-                type: Discord.ApplicationCommandOptionType.Channel,
-                required: true,
-                description: "The channel that the role will be pingged!"
-            },
-            {
                 name: "timeout",
                 type: Discord.ApplicationCommandOptionType.String,
                 required: true,
-                description: "The timout to ping the role!"
+                description: "The timout to disable the role pinging!"
             }
         ],
         run: async(interaction, args) => {
 
             let role = args.role
-            let channel = args.channel
             let timeout = ms(args.timeout)
 
             let newRole = {
                 timeout: timeout,
                 roleId: role,
-                guildId: interaction.guild.id,
-                channelId: channel
+                guildId: interaction.guild.id
             }
 
             roles.push(newRole)
-            startRolePing(newRole)
-
-            fs.writeFile(
-                './roles.json',
-                JSON.stringify(roles), 
-                function(err) {if(err) console.log(err)}
-            )
+            rolePingManager(newRole)
+            saveRolesCache()
 
             const embed = new Discord.EmbedBuilder()
             .setTitle("Role added!")
@@ -77,25 +64,27 @@ const commands = [
                     inline: false
                 },
                 {
-                    name: "> Channel:",
-                    value: `<#${channel}>`,
-                    inline: false
-                },
-                {
                     name: "> Timeout:",
-                    value: `${ms(timeout, { long: true })}!`,
-                    inline: false
+                    value: `${ms(timeout, { long: true })}`,
+                    inline: true
                 }
             )
             .setColor(config.embedColor)
+            .setTimestamp()
 
             interaction.reply({ embeds: [embed] })
+
+            let guildRoles = await interaction.guild.roles.fetch()
+            let disableRole = guildRoles.get(role)
+
+            disableRole.setMentionable(false)
+
         }
     },
     {
         name: "removerole",
         type: Discord.ApplicationCommandType.ChatInput,
-        description: "Remove a role for the bot to ping!",
+        description: "Remove a role for the bot enable pinging!",
         options: [
             {
                 name: "role",
@@ -109,8 +98,8 @@ const commands = [
             let role = args.role
 
             let j = 0;
-            roles.forEach(i => {
-                if(i.roleId == role.id){
+            roles.forEach(async i => {
+                if(i.roleId == role){
 
                     
                     const embed = new Discord.EmbedBuilder()
@@ -120,22 +109,20 @@ const commands = [
                             name: "> Role:",
                             value: `<@&${role}>`,
                             inline: false
-                        },
-                        {
-                            name: "> Channel:",
-                            value: `<#${i.channelId}>`
                         }
                     )
                     .setColor(config.embedColor)
+                    .setTimestamp()
 
                     roles.splice(i,1)
-                    fs.writeFile(
-                        './roles.json',
-                        JSON.stringify(roles), 
-                        function(err) {if(err) console.log(err)}
-                    )
+                    saveRolesCache()
 
                     interaction.reply({ embeds: [embed] })
+
+                    let guildRoles = await interaction.guild.roles.fetch()
+                    let disableRole = guildRoles.get(role)
+
+                    disableRole.setMentionable(true)
                 }
                 j++
             })
@@ -148,14 +135,58 @@ client.on('ready', async() => {
     await client.application.commands.set(commands)
     console.log(`${client.user.tag} is online!`)
 
+    let willSave = false
     let i = 0
     setInterval(() => {
         client.user.setActivity(`${config.activities[i].text}`, { type: config.activities[i].type })
         i == config.activities.length - 1 ? i = 0 : i++
+
+        if(willSave) saveRolesCache()
+
+        willSave = !willSave
     },5000)
 
     roles.forEach(async i => {
-        startRolePing(i)
+        rolePingManager(i)
+    })
+})
+
+client.on('messageCreate', async(message) => {
+    let roleMentions = message.mentions.roles
+    roleMentions.forEach(async i => {
+        
+        let newRole = {
+            timeout: ms(config.defaultTimeout),
+            roleId: i.id,
+            guildId: message.guild.id
+        }
+
+        roles.push(newRole)
+        rolePingManager(newRole)
+        saveRolesCache()
+
+        let guildChannels = await message.guild.channels.fetch()
+        let channel = guildChannels.get(config.logsChannel[message.guild.id])
+
+        const embed = new Discord.EmbedBuilder()
+        .setTitle("Role added")
+        .addFields(
+            {
+                name: "> Role:",
+                value: `<@&${i.id}>`,
+                inline: false
+            },
+            {
+                name: "> Timeout:",
+                value: `${ms(ms(config.defaultTimeout), { long: true })}`
+            }
+        )
+        .setColor(config.embedColor)
+        .setTimestamp()
+
+        i.setMentionable(false)
+
+        if(channel) channel.send({ embeds: [embed] })
     })
 })
 
@@ -176,21 +207,51 @@ client.on('interactionCreate', async(interaction) => {
     }
 })
 
-async function startRolePing(pingRole) {
+async function rolePingManager(pingRole) {
     setInterval(async () => {
-        console.log(pingRole)
-        let guild = client.guilds.cache.get(pingRole.guildId)
+        if(pingRole.timeout <= 0){
+            let guild = client.guilds.cache.get(pingRole.guildId)
+            
+            let guildRoles = await guild.roles.fetch()
+            let role = guildRoles.get(pingRole.roleId)
 
-        let guildChannels = await guild.channels.fetch()
-        let channel = guildChannels.get(pingRole.channelId)
+            console.log(role)
 
-        let guildRoles = await guild.roles.fetch()
-        let role = guildRoles.get(pingRole.roleId)
+            role.setMentionable(true)
 
-        if(channel && role){
-            channel.send(`<@&${pingRole.roleId}>`)
+            let index = roles.indexOf(pingRole)
+            
+            const embed = new Discord.EmbedBuilder()
+            .setTitle("Role removed")
+            .addFields(
+                {
+                    name: "> Role:",
+                    value: `<@&${pingRole.roleId}>`,
+                    inline: false
+                }
+            )
+            .setColor(config.embedColor)
+            .setTimestamp()
+
+            let guildChannels = await guild.channels.fetch()
+            let channel = guildChannels.get(config.logsChannel)
+
+            if(channel) channel.send({ embeds: [embed] })
+
+            roles.splice(index, 1)
+            saveRolesCache()
+        } else{
+            pingRole.timeout -= 1000
         }
-    },pingRole.timeout)
+    },1000)
+}
+
+function saveRolesCache(){
+    fs.writeFile(
+        './roles.json',
+        JSON.stringify(roles), 
+        function(err) {if(err) console.log(err)}
+    )
 }
 
 client.login(config.token)
