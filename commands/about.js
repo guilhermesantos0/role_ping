@@ -1,5 +1,5 @@
-const { embedColor } = require("../config.json");
-const { uptime, config } = require("process");
+const { embedColor, aboutText } = require("../config.json");
+const { uptime } = require("process");
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { version } = require("../package.json");
 
@@ -13,7 +13,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle(interaction.client.user.username)
-            .setDescription(config.aboutText)
+            .setDescription(aboutText)
             .addFields([
                 {
                     name: "> Current instance started at",
