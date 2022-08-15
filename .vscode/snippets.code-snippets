@@ -10,6 +10,8 @@
           "\t\t.setName(\"\")",
           "\t\t.setDescriptions(\"\"),",
           "\tasync execute(interaction, args) {",
+          "\t\tconst embed = new EmbedBuilder();",
+          "",
           "\t\t//",
           "\t}",
           "}"

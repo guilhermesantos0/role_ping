@@ -56,5 +56,5 @@ function getUptimeString() {
     let hrs = rHrs > 0 ? `${rHrs}hr${rHrs > 1 ? "s" : ""} ` : "";
     let mins = rMins > 0 ? `${rMins}min${rMins > 1 ? "s" : ""} ` : "";
 
-    return `${days}${hrs}${mins}${rSecs.toFixed(3)}sec${rSecs > 1 ? "s" : ""}`;
+    return `${days}${hrs}${mins}${Math.floor(rSecs)}sec${rSecs > 1 ? "s" : ""}`;
 }

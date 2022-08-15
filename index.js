@@ -134,7 +134,7 @@ function setBotActivity(clientUser) {
 
 function saveRolesCache() {
     writeFileSync('./commands/roles.json', JSON.stringify(client.roles, undefined, 4), (err) => {
-        if (err) console.log(err)
+        if (err) console.error(err)
     });
 }
 
