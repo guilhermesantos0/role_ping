@@ -2,7 +2,7 @@
 
 A bot that disables role pinging when they are mentioned!<br>
 Use ` npm install ` to install necessary modules.<br>
-<stong>Note: This is not intended to be a full prodiction bot ans is solely meant for a single server.</strong><br>
+Note: This is not intended to be a full prodiction bot and is solely meant for a single server.<br>
 
 ## example:
 
