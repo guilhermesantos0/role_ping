@@ -11,7 +11,7 @@ Note: This is not intended to be a full prodiction bot and is solely meant for a
 
 #
 
-Add/Remove/Update via Slash comannds!<br
+Add/Remove/Update via Slash comannds!<br>
 ` <> ` are required<br>
 ` [] ` are optional
 
