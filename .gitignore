@@ -1,0 +1,4 @@
+node_modules
+config.json
+commands/roles.json
+p3timer.sh

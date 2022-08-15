@@ -1,0 +1,15 @@
+{
+    "token": "",
+    "clientId": "",
+    "ownerId": "",
+    "memberDeny": "",
+    "embedColor": "#663366",
+    "rejectColor": "#663334",
+    "aboutText": "",
+    "activities": [
+        { 
+            "text": "for Mentions", 
+            "type": 3
+        }
+    ]
+}

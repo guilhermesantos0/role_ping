@@ -1,6 +1,7 @@
-# role_ping
+# Ping Timer
 
 A bot that disables role pinging when they are mentioned!<br>
+<stong>Note: This is not intended to be a full prodiction bot ans is solely meant for a single server.</strong><br>
 <br>
 
 ## example:
@@ -10,10 +11,15 @@ A bot that disables role pinging when they are mentioned!<br>
 
 #
 
-There are also Slash Commands to help moderation!
+Add/Remove/Update via Slash comannds!
+` <> ` are required
+` [] ` are optional
 
-``` /addrole [role] [timeout] ```<br>
-``` /removerole [role] ```
+``` /addrole <role> [timeout] ``` Timeout default is 1h<br>
+``` /removerole <role> ```<br>
+``` /updaterole <role> [timeout] ```<br>
+``` /about ```<br>
+``` /shutdown ```
 
 The timeout must follow the <strong>ms</strong> logic.
 
