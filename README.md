@@ -1,8 +1,8 @@
 # Ping Timer
 
 A bot that disables role pinging when they are mentioned!<br>
+Use ` npm install ` to install necessary modules.<br>
 <stong>Note: This is not intended to be a full prodiction bot ans is solely meant for a single server.</strong><br>
-<br>
 
 ## example:
 
@@ -11,8 +11,8 @@ A bot that disables role pinging when they are mentioned!<br>
 
 #
 
-Add/Remove/Update via Slash comannds!
-` <> ` are required
+Add/Remove/Update via Slash comannds!<br
+` <> ` are required<br>
 ` [] ` are optional
 
 ``` /addrole <role> [timeout] ``` Timeout default is 1h<br>
@@ -23,7 +23,7 @@ Add/Remove/Update via Slash comannds!
 
 The timeout must follow the <strong>ms</strong> logic.
 
-### example:
+### Example:
 
 * 1m = 1 minute
 * 1s = 1 second
