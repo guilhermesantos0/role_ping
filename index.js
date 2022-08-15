@@ -52,7 +52,6 @@ const commands = [
             }
 
             roles.push(newRole)
-            rolePingManager(newRole)
             saveRolesCache()
 
             const embed = new Discord.EmbedBuilder()
@@ -146,9 +145,7 @@ client.on('ready', async() => {
         willSave = !willSave
     },5000)
 
-    roles.forEach(async i => {
-        rolePingManager(i)
-    })
+    rolePingManager()
 })
 
 client.on('messageCreate', async(message) => {
@@ -162,7 +159,6 @@ client.on('messageCreate', async(message) => {
         }
 
         roles.push(newRole)
-        rolePingManager(newRole)
         saveRolesCache()
 
         let guildChannels = await message.guild.channels.fetch()
@@ -207,43 +203,43 @@ client.on('interactionCreate', async(interaction) => {
     }
 })
 
-async function rolePingManager(pingRole) {
-    setInterval(async () => {
-        if(pingRole.timeout <= 0){
-            let guild = client.guilds.cache.get(pingRole.guildId)
+async function rolePingManager() {
+    setInterval(() => {
+        roles.forEach(async r => {
+            if(r.timeout <= ms("1s")){
+                let guild = client.guilds.cache.get(r.guildId)
             
-            let guildRoles = await guild.roles.fetch()
-            let role = guildRoles.get(pingRole.roleId)
-
-            console.log(role)
-
-            role.setMentionable(true)
-
-            let index = roles.indexOf(pingRole)
-            
-            const embed = new Discord.EmbedBuilder()
-            .setTitle("Role removed")
-            .addFields(
-                {
-                    name: "> Role:",
-                    value: `<@&${pingRole.roleId}>`,
-                    inline: false
-                }
-            )
-            .setColor(config.embedColor)
-            .setTimestamp()
-
-            let guildChannels = await guild.channels.fetch()
-            let channel = guildChannels.get(config.logsChannel)
-
-            if(channel) channel.send({ embeds: [embed] })
-
-            roles.splice(index, 1)
-            saveRolesCache()
-        } else{
-            pingRole.timeout -= 1000
-        }
-    },1000)
+                let guildRoles = await guild.roles.fetch()
+                let role = guildRoles.get(r.roleId)
+    
+                role.setMentionable(true)
+    
+                let index = roles.indexOf(r)
+                
+                const embed = new Discord.EmbedBuilder()
+                .setTitle("Role removed")
+                .addFields(
+                    {
+                        name: "> Role:",
+                        value: `<@&${r.roleId}>`,
+                        inline: false
+                    }
+                )
+                .setColor(config.embedColor)
+                .setTimestamp()
+    
+                let guildChannels = await guild.channels.fetch()
+                let channel = guildChannels.get(config.logsChannel)
+    
+                if(channel) channel.send({ embeds: [embed] })
+    
+                roles.splice(index, 1)
+                saveRolesCache()
+            }else{
+                r.timeout -= ms("1s")
+            }
+        })
+    },ms("1s"))
 }
 
 function saveRolesCache(){
@@ -255,3 +251,42 @@ function saveRolesCache(){
 }
 
 client.login(config.token)
+
+
+// this is the old code, just ignore :)
+
+
+// if(pingRole.timeout <= 0){
+//     let guild = client.guilds.cache.get(pingRole.guildId)
+    
+//     let guildRoles = await guild.roles.fetch()
+//     let role = guildRoles.get(pingRole.roleId)
+
+//     console.log(role)
+
+//     role.setMentionable(true)
+
+//     let index = roles.indexOf(pingRole)
+    
+//     const embed = new Discord.EmbedBuilder()
+//     .setTitle("Role removed")
+//     .addFields(
+//         {
+//             name: "> Role:",
+//             value: `<@&${pingRole.roleId}>`,
+//             inline: false
+//         }
+//     )
+//     .setColor(config.embedColor)
+//     .setTimestamp()
+
+//     let guildChannels = await guild.channels.fetch()
+//     let channel = guildChannels.get(config.logsChannel)
+
+//     if(channel) channel.send({ embeds: [embed] })
+
+//     roles.splice(index, 1)
+//     saveRolesCache()
+// } else{
+//     pingRole.timeout -= 1000
+// }
