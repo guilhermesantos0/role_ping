@@ -229,7 +229,7 @@ async function rolePingManager() {
                 .setTimestamp()
     
                 let guildChannels = await guild.channels.fetch()
-                let channel = guildChannels.get(config.logsChannel)
+                let channel = guildChannels.get(config.logsChannel[r.guildId])
     
                 if(channel) channel.send({ embeds: [embed] })
     
