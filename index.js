@@ -64,8 +64,8 @@ const commands = [
                 },
                 {
                     name: "> Timeout:",
-                    value: `${ms(timeout, { long: true })}`,
-                    inline: true
+                    value: `${ms(timeout, { long: true })}!`,
+                    inline: false
                 }
             )
             .setColor(config.embedColor)
