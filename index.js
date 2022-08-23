@@ -37,13 +37,13 @@ client.on('ready', async () => {
 
     setBotActivity(client.user);
 
-    setInterval(() => setBotActivity(client.user), 300000);
-
     client.roles.forEach(async (i) => {
         if (i.underTimeout) i.underTimeout = false;
         setTimeout(() => { }, ms("2s"))
     })
     saveRolesCache();
+    
+    setInterval(() => setBotActivity(client.user), 300000);
 });
 
 client.on('messageCreate', async (message) => {
