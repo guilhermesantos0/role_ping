@@ -38,10 +38,21 @@ client.on('ready', async () => {
     setBotActivity(client.user);
 
     client.roles.forEach(async (i) => {
-        if (i.underTimeout) i.underTimeout = false;
-        setTimeout(() => { }, ms("2s"))
+        setTimeout(() => {
+            if (i.underTimeout) {
+                client.guilds.fetch(i.guildId).then(async (guild) => {
+                    if (guild.available) {
+                        guild.roles.fetch(i.roleId).then(async (role) => {
+                            role.setMentionable(true);
+                            i.underTimeout = false;
+                            saveRolesCache();
+                            console.log(`Role with ID [${i.roleId}] has been reset.`)
+                        })
+                    } else console.log(`${guild.name} [${guild.id}] is not available!`)
+                })
+            }
+        }, ms('2s'));
     })
-    saveRolesCache();
     
     setInterval(() => setBotActivity(client.user), 300000);
 });
@@ -129,7 +140,7 @@ async function startPingTimeout(role) {
 
 function setBotActivity(clientUser) {
     let i = Math.floor(Math.random() * activities.length)
-    clientUser.setActivity(`${activities[i].text}`, { type: activities[i].type });
+    clientUser.setActivity(activities[i].text, { type: activities[i].type });
 }
 
 function saveRolesCache() {

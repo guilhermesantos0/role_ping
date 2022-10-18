@@ -1,4 +1,3 @@
-const roles = require("./roles.json") ?? [];
 const { embedColor, rejectColor } = require("../config.json");
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const ms = require("ms");
@@ -22,7 +21,7 @@ module.exports = {
         let oldTimeout;
         let newTimeout;
 
-        if (roles.includes(role)) {
+        if (interaction.client.roles.includes(role)) {
             embed.setTitle("Role Not in Registry!")
                 .setDescription(`The role <@&${role}> was not in the registry.\nDid you choose the wrong role?`)
                 .setColor(rejectColor)
@@ -32,13 +31,13 @@ module.exports = {
             return;
         }
 
-        roles.forEach(async (i) => {
+        interaction.client.roles.forEach(async (i) => {
             if (i.roleId == role) {
                 if (i.timeout != ms(timeout)) {
                     oldTimeout = i.timeout;
                     i.timeout = ms(timeout);
                     newTimeout = i.timeout;
-                    saveRolesCache();
+                    saveRolesCache(interaction.client.roles);
                 } else {
                     oldTimeout = i.timeout;
                     noChange = true
@@ -90,7 +89,7 @@ module.exports = {
     }
 }
 
-function saveRolesCache() {
+function saveRolesCache(roles) {
     writeFileSync('./commands/roles.json', JSON.stringify(roles, undefined, 4), (err) => {
         if (err) console.error(err)
     });

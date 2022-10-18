@@ -1,6 +1,6 @@
 {
     "name": "p3_timer_bot",
-    "version": "1.2.8",
+    "version": "1.2.9",
     "description": "Prevent the spamming of role pings.",
     "main": "index.js",
     "scripts": {
