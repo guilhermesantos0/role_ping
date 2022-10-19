@@ -1,7 +1,6 @@
 const { Client, PermissionFlagsBits, Collection, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js');
 const { token, activities, rejectColor, ownerId } = require("./config.json");
 const { writeFileSync, readdirSync } = require("fs");
-const roles = require("./commands/roles.json") ?? [];
 const ms = require("ms");
 const { join } = require('path');
 
@@ -19,7 +18,7 @@ const client = new Client({
     ]
 });
 
-client.roles = roles;
+client.roles = require("./commands/roles.json") ?? [];
 client.startTime = Date.now();
 client.commands = new Collection();
 const commandsPath = join(__dirname, 'commands');
