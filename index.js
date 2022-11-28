@@ -59,9 +59,9 @@ client.on('ready', async () => {
 });
 
 client.on('messageCreate', async (message) => {
-    let roleMentions = message.mentions.roles;
-
     if (message.author == client.user || message.author.bot) return;
+    
+    let roleMentions = message.mentions.roles;
 
     if (!message.member.permissions.has(PermissionFlagsBits.MentionEveryone)) {
         roleMentions.forEach(async i => {
