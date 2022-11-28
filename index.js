@@ -42,10 +42,12 @@ client.on('ready', async () => {
                 client.guilds.fetch(i.guildId).then(async (guild) => {
                     if (guild.available) {
                         guild.roles.fetch(i.roleId).then(async (role) => {
-                            role.setMentionable(true);
-                            i.underTimeout = false;
-                            saveRolesCache();
-                            console.log(`Role with ID [${i.roleId}] has been reset.`)
+                            if (!role.mentionable) {
+                                role.setMentionable(true);
+                                i.underTimeout = false;
+                                saveRolesCache();
+                                console.log(`Role with ID [${i.roleId}] has been reset.`);
+                            }
                         })
                     } else console.log(`${guild.name} [${guild.id}] is not available!`)
                 })
