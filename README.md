@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/dumbdemon/ping-timer/badge)](https://www.codefactor.io/repository/github/dumbdemon/ping-timer)
+
 # Ping Timer
 A bot that disables role pinging when they are mentioned!<br>
 Use ` npm install ` to install necessary modules.<br>
