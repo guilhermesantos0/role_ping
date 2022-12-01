@@ -14,10 +14,20 @@ module.exports = {
 
         let role = args.role;
         const embed = new EmbedBuilder();
+        let theRole;
+        let index = 0;
+        let inRoles = false;
+        for (let blob of interaction.client.roles) {
+            if (blob.roleId == role) {
+                inRoles = true;
+                theRole = blob;
+                index = interaction.client.roles.indexOf(blob);
+                break;
+            }
+        }
 
-        if (interaction.client.roles.fetch(role) == undefined) {
-            var reject = new EmbedBuilder();
-            reject.setTitle("Role Not in Registry!")
+        if (!inRoles) {
+            embed.setTitle("Role Not in Registry!")
                 .setDescription(`The role <@&${role}> was not in the registry.\nDid you choose the wrong role?`)
                 .setColor(rejectColor)
                 .setTimestamp();
@@ -26,29 +36,24 @@ module.exports = {
             return;
         }
 
-        interaction.client.roles.forEach(async i => {
-            if (i.roleId == role) {
-                interaction.client.roles.splice(i, 1);
-                saveRolesCache(interaction.client.roles);
+        interaction.client.roles.splice(index, 1);
+        saveRolesCache(interaction.client.roles);
 
-                var theRole = await interaction.guild.roles.fetch(role);
-                if (!theRole.mentionable) theRole.setMentionable(true);
+        var guildRole = await interaction.guild.roles.fetch(role);
+        if (!guildRole.mentionable) guildRole.setMentionable(true);
 
-                embed.setTitle("Role removed!")
-                    .addFields(
-                        {
-                            name: "> Role:",
-                            value: `<@&${role}>`,
-                            inline: false
-                        }
-                    )
-                    .setColor(embedColor)
-                    .setTimestamp();
+        embed.setTitle("Role removed!")
+            .addFields(
+                {
+                    name: "> Role:",
+                    value: `<@&${role}>`,
+                    inline: false
+                }
+            )
+            .setColor(embedColor)
+            .setTimestamp();
 
-                interaction.reply({ embeds: [embed] });
-                return;
-            }
-        });
+        interaction.reply({ embeds: [embed] });
     }
 }
 

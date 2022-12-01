@@ -20,8 +20,24 @@ module.exports = {
         let noChange = false;
         let oldTimeout;
         let newTimeout;
+        let inRoles = false;
+        let theRole;
+        let index = 0;
+        
+        for (let blob of interaction.client.roles) {
+            if (blob.roleId == role) {
+                inRoles = true;
+                theRole = blob;
+                index = interaction.client.roles.indexOf(blob);
+                break;
+            }
+        }
+        
+        const embed = new EmbedBuilder()
+            .setColor(embedColor)
+            .setTimestamp();
 
-        if (interaction.client.roles.includes(role)) {
+        if (!inRoles) {
             embed.setTitle("Role Not in Registry!")
                 .setDescription(`The role <@&${role}> was not in the registry.\nDid you choose the wrong role?`)
                 .setColor(rejectColor)
@@ -31,23 +47,16 @@ module.exports = {
             return;
         }
 
-        interaction.client.roles.forEach(async (i) => {
-            if (i.roleId == role) {
-                if (i.timeout != ms(timeout)) {
-                    oldTimeout = i.timeout;
-                    i.timeout = ms(timeout);
-                    newTimeout = i.timeout;
-                    saveRolesCache(interaction.client.roles);
-                } else {
-                    oldTimeout = i.timeout;
-                    noChange = true
-                };
-            }
-        });
-
-        const embed = new EmbedBuilder()
-            .setColor(embedColor)
-            .setTimestamp()
+        if (theRole.timeout != ms(timeout)) {
+            oldTimeout = theRole.timeout;
+            theRole.timeout = ms(timeout);
+            newTimeout = theRole.timeout;
+            interaction.client.roles[index] = theRole;
+            saveRolesCache(interaction.client.roles);
+        } else {
+            oldTimeout = theRole.timeout;
+            noChange = true;
+        };
 
         if (!noChange) {
             embed.setTitle("Role updated!")
