@@ -1,0 +1,21 @@
+{
+    "commands": {
+        "prefix": "",
+        "body": [
+          "const { embedColor, rejectColor } = require(\"../config.json\");",
+          "const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require(\"discord.js\");",
+          "",
+          "module.exports = {",
+          "\tdata: new SlashCommandBuilder()",
+          "\t\t.setName(\"\")",
+          "\t\t.setDescriptions(\"\"),",
+          "\tasync execute(interaction, args) {",
+          "\t\tconst embed = new EmbedBuilder();",
+          "",
+          "\t\t//",
+          "\t}",
+          "}"
+        ],
+        "description": "commands"
+      }
+}

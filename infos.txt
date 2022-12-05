@@ -7,6 +7,4 @@ activities:
 4 - CUSTOM
 5 - COMPETING
 
-the logChannel structure on config is:
-
-    "guild_id": "channel_id"
+NOTE: Bots cannot set a CUSTOM activity type, it is only for custom statuses received from users

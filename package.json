@@ -1,15 +1,16 @@
 {
-  "name": "u_lazejdb",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "discord.js": "^14.2.0",
-    "ms": "^2.1.3"
-  }
+    "name": "p3_timer_bot",
+    "version": "1.2.9",
+    "description": "Prevent the spamming of role pings.",
+    "main": "index.js",
+    "scripts": {
+        "bot": "node index.js",
+        "commands": "node deploy-commands.js"
+    },
+    "author": "dumbdemon & guilhermesantos0",
+    "license": "ISC",
+    "dependencies": {
+        "discord.js": "^14.7.1",
+        "ms": "^2.1.3"
+    }
 }
